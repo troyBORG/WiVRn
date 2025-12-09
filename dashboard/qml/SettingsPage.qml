@@ -252,6 +252,39 @@ Kirigami.ScrollablePage {
                 }
             }
 
+            RowLayout {
+                Controls.CheckBox {
+                    id: osc_enabled
+                    text: i18n("Enable OSC output (SteamLink emulation)")
+                }
+                Kirigami.ContextualHelpButton {
+                    toolTipText: i18n("Sends tracking data via OSC in SteamLink format.\nCompatible with applications that listen to SteamLink OSC messages, such as KoboldOSC.")
+                }
+            }
+
+            RowLayout {
+                Kirigami.FormData.label: i18n("OSC Host:")
+                Layout.fillWidth: true
+                enabled: osc_enabled.checked
+                Controls.TextField {
+                    id: osc_host
+                    placeholderText: "127.0.0.1"
+                    Layout.fillWidth: true
+                }
+            }
+
+            RowLayout {
+                Kirigami.FormData.label: i18n("OSC Port:")
+                Layout.fillWidth: true
+                enabled: osc_enabled.checked
+                Controls.SpinBox {
+                    id: osc_port
+                    from: 1
+                    to: 65535
+                    value: 9000
+                }
+            }
+
             Controls.CheckBox {
                 id: adb_custom
                 Layout.row: 0
@@ -396,6 +429,9 @@ Kirigami.ScrollablePage {
         Settings.debugGui = debug_gui.checked;
         Settings.steamVrLh = steamvr_lh.checked;
         Settings.hidForwarding = hid_forwarding.checked;
+        Settings.oscEnabled = osc_enabled.checked;
+        Settings.oscHost = osc_host.text;
+        Settings.oscPort = osc_port.value;
     }
 
     function load() {
@@ -408,6 +444,9 @@ Kirigami.ScrollablePage {
         debug_gui.checked = Settings.debugGui;
         steamvr_lh.checked = Settings.steamVrLh;
         hid_forwarding.checked = Settings.hidForwarding;
+        osc_enabled.checked = Settings.oscEnabled;
+        osc_host.text = Settings.oscHost;
+        osc_port.value = Settings.oscPort;
 
         openvr_combobox.load()
 

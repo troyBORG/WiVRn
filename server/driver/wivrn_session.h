@@ -23,6 +23,7 @@
 #include "driver/app_pacer.h"
 #include "utils/thread_safe.h"
 #include "wivrn_connection.h"
+#include "osc_output.h"
 #include "wivrn_controller.h"
 #include "wivrn_hand_interaction.h"
 #include "wivrn_hmd.h"
@@ -139,6 +140,8 @@ class wivrn_session : public xrt_system_devices
 	std::ofstream feedback_csv;
 
 	std::shared_ptr<audio_device> audio_handle;
+
+	osc_output osc;
 
 	// when sessions shall be destroyed, key is timestap, value is client id
 	thread_safe<std::map<int64_t, int32_t>> session_loss;

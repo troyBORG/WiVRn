@@ -224,6 +224,15 @@ configuration::configuration()
 			else
 				openvr_compat_path = *it;
 		}
+
+		if (auto it = json.find("osc-enabled"); it != json.end())
+			osc_enabled = *it;
+
+		if (auto it = json.find("osc-host"); it != json.end())
+			osc_host = *it;
+
+		if (auto it = json.find("osc-port"); it != json.end())
+			osc_port = *it;
 	}
 	catch (const std::exception & e)
 	{

@@ -77,6 +77,10 @@ public:
 	Q_PROPERTY(bool debugGui READ debugGui WRITE set_debugGui NOTIFY debugGuiChanged)
 	Q_PROPERTY(bool steamVrLh READ steamVrLh WRITE set_steamVrLh NOTIFY steamVrLhChanged)
 
+	Q_PROPERTY(bool oscEnabled READ oscEnabled WRITE set_oscEnabled NOTIFY oscEnabledChanged)
+	Q_PROPERTY(QString oscHost READ oscHost WRITE set_oscHost NOTIFY oscHostChanged)
+	Q_PROPERTY(int oscPort READ oscPort WRITE set_oscPort NOTIFY oscPortChanged)
+
 	Q_PROPERTY(bool flatpak READ flatpak CONSTANT)
 	Q_PROPERTY(bool hid_forwarding_supported READ hid_forwarding CONSTANT)
 	Q_PROPERTY(bool debug_gui_supported READ debug_gui CONSTANT)
@@ -94,6 +98,9 @@ public:
 	SETTER_GETTER_NOTIFY(bool, steamVrLh)
 	SETTER_GETTER_NOTIFY(bool, tcpOnly)
 	SETTER_GETTER_NOTIFY(QString, openvr)
+	SETTER_GETTER_NOTIFY(bool, oscEnabled)
+	SETTER_GETTER_NOTIFY(QString, oscHost)
+	SETTER_GETTER_NOTIFY(int, oscPort)
 private:
 	nlohmann::json m_jsonSettings = nlohmann::json::object();
 	nlohmann::json m_originalSettings;

@@ -122,6 +122,9 @@ void Settings::emitAllChanged()
 	debugGuiChanged();
 	steamVrLhChanged();
 	hidForwardingChanged();
+	oscEnabledChanged();
+	oscHostChanged();
+	oscPortChanged();
 }
 
 void Settings::load(const wivrn_server * server)
@@ -436,6 +439,54 @@ void Settings::set_steamVrLh(const bool & value)
 		steamVrLhChanged();
 }
 
+bool Settings::oscEnabled() const
+{
+	auto it = m_jsonSettings.find("osc-enabled");
+	if (it != m_jsonSettings.end() and it->is_boolean())
+		return *it;
+	return false;
+}
+
+void Settings::set_oscEnabled(const bool & value)
+{
+	auto old = oscEnabled();
+	m_jsonSettings["osc-enabled"] = value;
+	if (old != value)
+		oscEnabledChanged();
+}
+
+QString Settings::oscHost() const
+{
+	auto it = m_jsonSettings.find("osc-host");
+	if (it != m_jsonSettings.end() and it->is_string())
+		return QString::fromStdString(*it);
+	return "127.0.0.1";
+}
+
+void Settings::set_oscHost(const QString & value)
+{
+	auto old = oscHost();
+	m_jsonSettings["osc-host"] = value.toStdString();
+	if (old != value)
+		oscHostChanged();
+}
+
+int Settings::oscPort() const
+{
+	auto it = m_jsonSettings.find("osc-port");
+	if (it != m_jsonSettings.end() and it->is_number())
+		return *it;
+	return 9000;
+}
+
+void Settings::set_oscPort(const int & value)
+{
+	auto old = oscPort();
+	m_jsonSettings["osc-port"] = value;
+	if (old != value)
+		oscPortChanged();
+}
+
 bool Settings::tcpOnly() const
 {
 	auto it = m_jsonSettings.find("tcp-only");
@@ -530,6 +581,9 @@ void Settings::restore_defaults()
 	m_jsonSettings.erase("use-steamvr-lh");
 	m_jsonSettings.erase("tcp-only");
 	m_jsonSettings.erase("application");
+	m_jsonSettings.erase("osc-enabled");
+	m_jsonSettings.erase("osc-host");
+	m_jsonSettings.erase("osc-port");
 	emitAllChanged();
 }
 

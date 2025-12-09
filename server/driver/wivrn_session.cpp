@@ -43,6 +43,7 @@
 #include "wivrn_generic_tracker.h"
 #include "wivrn_htc_face_tracker.h"
 #include "wivrn_ipc.h"
+#include "osc_output.h"
 
 #include "wivrn_packets.h"
 #include "xr/to_string.h"
@@ -392,6 +393,10 @@ xrt_result_t wivrn::wivrn_session::create_session(std::unique_ptr<wivrn_connecti
 		self->feedback_csv.open(dump_file);
 	}
 
+	// Configure OSC output
+	const auto config = configuration();
+	self->osc.configure(config.osc_enabled, config.osc_host, config.osc_port);
+
 	*out_xsysd = self.release();
 	return XRT_SUCCESS;
 }
@@ -606,6 +611,9 @@ void wivrn_session::operator()(const from_headset::tracking & tracking)
 		fb_face2_tracker->update_tracking(tracking, offset);
 	else if (htc_face_tracker)
 		htc_face_tracker->update_tracking(tracking, offset);
+
+	// Send tracking data via OSC if enabled
+	osc.send_tracking(tracking, offset);
 }
 
 void wivrn_session::operator()(from_headset::override_foveation_center && foveation_center)

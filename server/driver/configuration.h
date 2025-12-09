@@ -67,6 +67,11 @@ struct configuration
 	bool tcp_only = false;
 	service_publication publication = service_publication::avahi;
 
+	// OSC output configuration (SteamLink OSC emulation)
+	bool osc_enabled = false;
+	std::string osc_host = "127.0.0.1";
+	int osc_port = 9000;
+
 	// monostate: default value, string: user defined, nullptr: disabled
 	std::variant<std::monostate, std::string, std::nullptr_t> openvr_compat_path;
 
