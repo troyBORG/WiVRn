@@ -232,3 +232,19 @@ Default value: `false`
 Only available when built with `WIVRN_FEATURE_STEAMVR_LIGHTHOUSE`
 
 Enables the driver to load SteamVR Lighthouse devices.
+
+## `stick-deadzone-left` and `stick-deadzone-right`
+Default value: `0.15` (15%)
+
+Controls the deadzone for controller thumbsticks to prevent drift. Values range from `0.0` (0%) to `1.0` (100%). Higher values require more stick movement before input is registered.
+
+The deadzone is applied as a circular deadzone, meaning it checks the distance from the center. Values within the deadzone are set to zero, and values outside are scaled to maintain full range.
+
+### Example
+```json
+{
+	"stick-deadzone-left": 0.20,
+	"stick-deadzone-right": 0.15
+}
+```
+Sets left stick deadzone to 20% and right stick deadzone to 15%.

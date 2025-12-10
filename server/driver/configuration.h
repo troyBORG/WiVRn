@@ -67,6 +67,10 @@ struct configuration
 	bool tcp_only = false;
 	service_publication publication = service_publication::avahi;
 
+	// Controller stick deadzone (0.0 to 1.0, default 0.15)
+	float stick_deadzone_left = 0.15f;
+	float stick_deadzone_right = 0.15f;
+
 	// monostate: default value, string: user defined, nullptr: disabled
 	std::variant<std::monostate, std::string, std::nullptr_t> openvr_compat_path;
 

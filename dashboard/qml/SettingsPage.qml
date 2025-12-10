@@ -212,6 +212,60 @@ Kirigami.ScrollablePage {
                 }
             }
 
+            GridLayout {
+                columns: 7
+                Kirigami.FormData.label: i18n("Controller stick deadzone:")
+                
+                // Left stick
+                Controls.Label {
+                    Layout.row: 0
+                    Layout.column: 0
+                    text: i18n("Left:")
+                }
+                Controls.SpinBox {
+                    id: stick_deadzone_left
+                    Layout.row: 0
+                    Layout.column: 1
+                    from: 0
+                    to: 100
+                    stepSize: 1
+                    value: Math.round(Settings.stickDeadzoneLeft * 100)
+                    onValueChanged: Settings.stickDeadzoneLeft = value / 100.0
+                }
+                Controls.Label {
+                    Layout.row: 0
+                    Layout.column: 2
+                    text: "%"
+                }
+                
+                // Right stick
+                Controls.Label {
+                    Layout.row: 0
+                    Layout.column: 3
+                    text: i18n("Right:")
+                }
+                Controls.SpinBox {
+                    id: stick_deadzone_right
+                    Layout.row: 0
+                    Layout.column: 4
+                    from: 0
+                    to: 100
+                    stepSize: 1
+                    value: Math.round(Settings.stickDeadzoneRight * 100)
+                    onValueChanged: Settings.stickDeadzoneRight = value / 100.0
+                }
+                Controls.Label {
+                    Layout.row: 0
+                    Layout.column: 5
+                    text: "%"
+                }
+                
+                Kirigami.ContextualHelpButton {
+                    Layout.row: 0
+                    Layout.column: 6
+                    toolTipText: i18n("Deadzone for controller thumbsticks to prevent drift. Higher values require more stick movement before input is registered. Range: 0-100% (default: 15%)")
+                }
+            }
 
             Kirigami.Separator {
                 Kirigami.FormData.isSection: true
@@ -408,6 +462,8 @@ Kirigami.ScrollablePage {
         debug_gui.checked = Settings.debugGui;
         steamvr_lh.checked = Settings.steamVrLh;
         hid_forwarding.checked = Settings.hidForwarding;
+        stick_deadzone_left.value = Math.round(Settings.stickDeadzoneLeft * 100);
+        stick_deadzone_right.value = Math.round(Settings.stickDeadzoneRight * 100);
 
         openvr_combobox.load()
 

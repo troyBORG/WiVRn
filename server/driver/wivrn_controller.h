@@ -49,6 +49,7 @@ class wivrn_controller : public xrt_device
 	std::vector<xrt_input> inputs_array;
 	std::vector<xrt_output> outputs_array;
 
+	int hand_id; // 0 = left, 1 = right
 	wivrn::wivrn_session * cnx;
 
 public:

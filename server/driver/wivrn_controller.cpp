@@ -27,6 +27,7 @@
 
 #include "util/u_logging.h"
 #include <array>
+#include <cmath>
 #include <format>
 #include <fstream>
 #include <magic_enum.hpp>
@@ -638,6 +639,7 @@ wivrn_controller::wivrn_controller(xrt_device_name name,
         poke_ext(hand_id == 0 ? device_id::LEFT_POKE : device_id::RIGHT_POKE),
         joints(hand_id),
         inputs_array(input_count, xrt_input{}),
+        hand_id(hand_id),
         cnx(cnx)
 {
 	inputs = inputs_array.data();
@@ -749,9 +751,44 @@ wivrn_controller::wivrn_controller(xrt_device_name name,
 	strcpy(serial, name_str.c_str());
 }
 
+// Apply circular deadzone to a 2D vector
+static void apply_deadzone(xrt_vec2 & vec, float deadzone)
+{
+	if (deadzone <= 0.0f)
+		return;
+
+	float magnitude = std::sqrt(vec.x * vec.x + vec.y * vec.y);
+	if (magnitude < deadzone)
+	{
+		vec.x = 0.0f;
+		vec.y = 0.0f;
+	}
+	else
+	{
+		// Scale the vector to compensate for deadzone
+		// This ensures full range is still available after deadzone
+		float scale = (magnitude - deadzone) / (1.0f - deadzone);
+		scale = std::max(0.0f, std::min(1.0f, scale)); // Clamp to [0, 1]
+		vec.x = (vec.x / magnitude) * scale;
+		vec.y = (vec.y / magnitude) * scale;
+	}
+}
+
 xrt_result_t wivrn_controller::update_inputs()
 {
 	std::lock_guard _{mutex};
+	
+	// Apply deadzone to thumbstick inputs before updating
+	const auto & config = configuration();
+	float deadzone = hand_id == 0 ? config.stick_deadzone_left : config.stick_deadzone_right;
+	if (deadzone > 0.0f)
+	{
+		if (inputs_staging[WIVRN_CONTROLLER_THUMBSTICK].active)
+		{
+			apply_deadzone(inputs_staging[WIVRN_CONTROLLER_THUMBSTICK].value.vec2, deadzone);
+		}
+	}
+	
 	inputs_array = inputs_staging;
 	return XRT_SUCCESS;
 }

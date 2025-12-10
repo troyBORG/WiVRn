@@ -116,6 +116,8 @@ void Settings::emitAllChanged()
 	tenbitChanged();
 	bitrateChanged();
 	scaleChanged();
+	stickDeadzoneLeftChanged();
+	stickDeadzoneRightChanged();
 	tcpOnlyChanged();
 	applicationChanged();
 	openvrChanged();
@@ -354,6 +356,48 @@ void Settings::set_scale(const float & value)
 		scaleChanged();
 }
 
+float Settings::stickDeadzoneLeft() const
+{
+	auto it = m_jsonSettings.find("stick-deadzone-left");
+	if (it != m_jsonSettings.end() and it->is_number())
+		return *it;
+	return 0.15f; // Default deadzone
+}
+
+void Settings::set_stickDeadzoneLeft(const float & value)
+{
+	auto old = stickDeadzoneLeft();
+	// Clamp between 0.0 and 1.0
+	float clamped = std::max(0.0f, std::min(1.0f, value));
+	if (clamped == 0.15f) // Default value
+		m_jsonSettings.erase("stick-deadzone-left");
+	else
+		m_jsonSettings["stick-deadzone-left"] = clamped;
+	if (old != clamped)
+		stickDeadzoneLeftChanged();
+}
+
+float Settings::stickDeadzoneRight() const
+{
+	auto it = m_jsonSettings.find("stick-deadzone-right");
+	if (it != m_jsonSettings.end() and it->is_number())
+		return *it;
+	return 0.15f; // Default deadzone
+}
+
+void Settings::set_stickDeadzoneRight(const float & value)
+{
+	auto old = stickDeadzoneRight();
+	// Clamp between 0.0 and 1.0
+	float clamped = std::max(0.0f, std::min(1.0f, value));
+	if (clamped == 0.15f) // Default value
+		m_jsonSettings.erase("stick-deadzone-right");
+	else
+		m_jsonSettings["stick-deadzone-right"] = clamped;
+	if (old != clamped)
+		stickDeadzoneRightChanged();
+}
+
 QString Settings::application() const
 {
 	// Automatically started application
@@ -530,6 +574,8 @@ void Settings::restore_defaults()
 	m_jsonSettings.erase("use-steamvr-lh");
 	m_jsonSettings.erase("tcp-only");
 	m_jsonSettings.erase("application");
+	m_jsonSettings.erase("stick-deadzone-left");
+	m_jsonSettings.erase("stick-deadzone-right");
 	emitAllChanged();
 }
 

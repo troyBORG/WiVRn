@@ -224,6 +224,21 @@ configuration::configuration()
 			else
 				openvr_compat_path = *it;
 		}
+
+		if (auto it = json.find("stick-deadzone-left"); it != json.end())
+		{
+			if (it->is_number())
+			{
+				stick_deadzone_left = std::max(0.0f, std::min(1.0f, (float)*it));
+			}
+		}
+		if (auto it = json.find("stick-deadzone-right"); it != json.end())
+		{
+			if (it->is_number())
+			{
+				stick_deadzone_right = std::max(0.0f, std::min(1.0f, (float)*it));
+			}
+		}
 	}
 	catch (const std::exception & e)
 	{
